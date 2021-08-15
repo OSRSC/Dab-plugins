@@ -24,7 +24,7 @@
  */
 
 object ProjectVersions {
-    const val openosrsVersion = "4.9.9"
+    const val openosrsVersion = "4.9.10"
     const val apiVersion = "^1.0.0"
 }
 
@@ -32,6 +32,7 @@ object Libraries {
     private object Versions {
         const val annotations = "20.1.0"
         const val apacheCommonsText = "1.9"
+        const val guava = "23.2-jre"
         const val gson = "2.8.6"
         const val guice = "4.2.3"
         const val junit = "4.13.1"
@@ -40,13 +41,16 @@ object Libraries {
         const val okhttp3 = "4.9.0"
         const val pf4j = "3.5.0"
         const val rxjava = "3.0.7"
+        const val findbugs = "3.0.2"
         const val slf4j = "1.7.30"
     }
 
     const val annotations = "org.jetbrains:annotations:${Versions.annotations}"
     const val apacheCommonsText = "org.apache.commons:commons-text:${Versions.apacheCommonsText}"
+    const val guava = "com.google.guava:guava:${Versions.guava}"
     const val gson = "com.google.code.gson:gson:${Versions.gson}"
     const val guice = "com.google.inject:guice:${Versions.guice}:no_aop"
+    const val findbugs = "com.google.code.findbugs:jsr305:${Versions.findbugs}"
     const val guiceTestlib = "com.google.inject.extensions:guice-testlib:${Versions.guice}"
     const val junit = "junit:junit:${Versions.junit}"
     const val lombok = "org.projectlombok:lombok:${Versions.lombok}"

@@ -8,7 +8,7 @@ public interface JugFillerConfig extends Config {
 
 	@ConfigTitle(
 			keyName = "delayConfig",
-			name = "Sleep Delay Configuration",
+			name = "Sleep Delay Configuration lul",
 			description = "Configure how the bot handles sleep delays",
 			position = 0
 	)

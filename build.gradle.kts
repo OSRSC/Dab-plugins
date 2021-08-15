@@ -1,3 +1,5 @@
+import ProjectVersions.openosrsVersion
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -53,6 +55,27 @@ subprojects {
     }
 
     apply<JavaPlugin>()
+
+    dependencies {
+        annotationProcessor(Libraries.lombok)
+        annotationProcessor(Libraries.pf4j)
+
+        compileOnly("com.openosrs:http-api:$openosrsVersion+")
+        compileOnly("com.openosrs:runelite-api:$openosrsVersion+")
+        compileOnly("com.openosrs:runelite-client:$openosrsVersion+")
+        compileOnly("com.openosrs.rs:runescape-api:$openosrsVersion+")
+
+        compileOnly(Libraries.findbugs)
+        compileOnly(Libraries.apacheCommonsText)
+        compileOnly(Libraries.guava)
+        compileOnly(Libraries.gson)
+        compileOnly(Libraries.guice)
+        compileOnly(Libraries.lombok)
+        compileOnly(Libraries.okhttp3)
+        compileOnly(Libraries.pf4j)
+        compileOnly(Libraries.rxjava)
+    }
+
 
     configure<JavaPluginConvention> {
         sourceCompatibility = JavaVersion.VERSION_11

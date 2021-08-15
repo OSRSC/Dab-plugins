@@ -25,7 +25,7 @@ import ProjectVersions.openosrsVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.1.1"
+version = "1.1.3"
 
 project.extra["PluginName"] = "Jug Filler" // This is the name that is used in the external plugin manager panel
 project.extra["PluginDescription"] = "Fills empty jugs with water at Hosidius Kitchen" // This is the description that is used in the external plugin manager panel
@@ -36,7 +36,8 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$openosrsVersion+")
     compileOnly("com.openosrs:runelite-client:$openosrsVersion+")
-    compileOnly(group = "com.openosrs.externals", name = "iutils", version = "4.0.8+");
+    compileOnly(project(":chinbreakhandler"))
+    compileOnly(project(":iutils"))
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
