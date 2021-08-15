@@ -36,8 +36,8 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$openosrsVersion+")
     compileOnly("com.openosrs:runelite-client:$openosrsVersion+")
-    implementation(project(":chinbreakhandler"))
-    implementation(project(":iutils"))
+    compileOnly(project(":chinbreakhandler"))
+    compileOnly(project(":iutils"))
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)

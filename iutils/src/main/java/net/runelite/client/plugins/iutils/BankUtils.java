@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.awt.event.KeyEvent.VK_ENTER;
-import static net.runelite.client.plugins.iutils.iUtils.iterating;
-import static net.runelite.client.plugins.iutils.iUtils.sleep;
+import static net.runelite.client.plugins.iutils.DabUtils.iterating;
+import static net.runelite.client.plugins.iutils.DabUtils.sleep;
 
 @Slf4j
 @Singleton
@@ -27,7 +27,7 @@ public class BankUtils {
     private Client client;
 
     @Inject
-    private iUtils utils;
+    private DabUtils utils;
 
     @Inject
     private MouseUtils mouse;

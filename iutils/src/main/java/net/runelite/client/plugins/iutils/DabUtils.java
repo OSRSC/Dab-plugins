@@ -56,7 +56,7 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 @Slf4j
 @SuppressWarnings("unused")
 @Singleton
-public class iUtils extends Plugin {
+public class DabUtils extends Plugin {
 
     @Inject
     public Game game;

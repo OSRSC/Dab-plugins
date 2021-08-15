@@ -14,8 +14,8 @@ import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
-import static net.runelite.client.plugins.iutils.iUtils.iterating;
-import static net.runelite.client.plugins.iutils.iUtils.sleep;
+import static net.runelite.client.plugins.iutils.DabUtils.iterating;
+import static net.runelite.client.plugins.iutils.DabUtils.sleep;
 
 @Slf4j
 @Singleton

@@ -28,7 +28,7 @@ import static net.runelite.client.plugins.JugFiller.JugFillerState.*;
 
 @Slf4j
 @Extension
-@PluginDependency(iUtils.class)
+@PluginDependency(DabUtils.class)
 @PluginDescriptor(
 		name = "Jug Filler",
 		description = "Fills empty jugs with water at Hosidius Kitchen",
@@ -46,7 +46,7 @@ public class JugFillerPlugin extends Plugin {
 	private JugFillerOverlay overlay;
 
 	@Inject
-	public iUtils utils;
+	public DabUtils utils;
 
 	@Inject
 	private InterfaceUtils interfaceUtils;

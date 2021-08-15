@@ -3,12 +3,11 @@ package net.runelite.client.plugins.iutils.ui;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.InventoryID;
 import net.runelite.api.ItemComposition;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.plugins.iutils.game.Game;
 import net.runelite.client.plugins.iutils.game.InventoryItem;
 import net.runelite.client.plugins.iutils.game.ItemQuantity;
 import net.runelite.client.plugins.iutils.game.iWidget;
-import net.runelite.client.plugins.iutils.iUtils;
+import net.runelite.client.plugins.iutils.DabUtils;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -72,7 +71,7 @@ public class Bank {
             return 0;
         }
 
-        for (iWidget item : iUtils.bankitems) {
+        for (iWidget item : DabUtils.bankitems) {
             if (item.itemId() == id) {
                 log.info("[Bank] Found item (requested = " + quantity + ", bank = " + item.quantity() + ", capacity = " + inventoryCapacity + ")");
 
@@ -170,7 +169,7 @@ public class Bank {
     public boolean deposit(int id, int quantity) {
         checkBankOpen();
 
-        for (iWidget item : iUtils.bankInventoryitems) {
+        for (iWidget item : DabUtils.bankInventoryitems) {
             if (item.itemId() == id) {
                 log.info("[Bank] Found item (requested = " + quantity + ", bank = " + item.quantity() + ")");
 
@@ -252,10 +251,10 @@ public class Bank {
 //    }
 
     public List<iWidget> items() {
-        if (iUtils.bankitems.isEmpty()) {
+        if (DabUtils.bankitems.isEmpty()) {
             game.tick(); //Give time for items to load
         }
-        return iUtils.bankitems;
+        return DabUtils.bankitems;
     }
 
     public int quantity(int id) {
@@ -263,7 +262,7 @@ public class Bank {
             throw new IllegalStateException("bank not open");
         }
 //        List<iWidget> items = game.widget(WidgetInfo.BANK_ITEM_CONTAINER).items();
-        for (iWidget item : iUtils.bankitems) {
+        for (iWidget item : DabUtils.bankitems) {
 //            if (item.itemId() == 6512 || item.itemId() == -1 || item.hidden()) {
 //                continue;
 //            }

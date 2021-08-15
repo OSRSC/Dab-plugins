@@ -5,7 +5,6 @@ import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.geometry.Cuboid;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.plugins.iutils.*;
@@ -22,7 +21,6 @@ import net.runelite.client.plugins.iutils.ui.InventoryItemStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -32,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.awt.event.KeyEvent.VK_ENTER;
-import static net.runelite.client.plugins.iutils.iUtils.sleep;
+import static net.runelite.client.plugins.iutils.DabUtils.sleep;
 
 /**
  * OPRS compatible port of a comprehensive OSRS automation API developed by Runemoro.
@@ -54,7 +52,7 @@ public class Game {
     public ClientThread clientThread;
 
     @Inject
-    public iUtils utils;
+    public DabUtils utils;
 
     @Inject
     public WalkUtils walkUtils;
@@ -226,7 +224,7 @@ public class Game {
     }
 
     public GameObjectStream objects() {
-        return getFromClientThread(() -> new GameObjectStream(iUtils.objects.stream()
+        return getFromClientThread(() -> new GameObjectStream(DabUtils.objects.stream()
                 .map(o -> new iObject(
                         this,
                         o,
@@ -238,7 +236,7 @@ public class Game {
     }
 
     public GroundItemStream groundItems() {
-        return getFromClientThread(() -> new GroundItemStream(iUtils.tileItems.stream()
+        return getFromClientThread(() -> new GroundItemStream(DabUtils.tileItems.stream()
                 .map(o -> new iGroundItem(
                         this,
                         o,

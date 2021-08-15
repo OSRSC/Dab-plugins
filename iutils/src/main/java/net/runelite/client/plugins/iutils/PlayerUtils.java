@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import static net.runelite.client.plugins.iutils.iUtils.sleep;
+import static net.runelite.client.plugins.iutils.DabUtils.sleep;
 
 @Slf4j
 @Singleton
