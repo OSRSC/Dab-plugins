@@ -1,7 +1,6 @@
 package net.runelite.client.plugins.JugFiller;
 
 import com.google.inject.Provides;
-import com.owain.chinbreakhandler.ChinBreakHandler;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ConfigButtonClicked;
@@ -81,9 +80,6 @@ public class JugFillerPlugin extends Plugin {
 	@Inject
 	private CalculationUtils calc;
 
-	@Inject
-	private ChinBreakHandler chinBreakHandler;
-
 	MenuEntry targetMenu;
 	Widget bankItem;
 	Instant botTimer;
@@ -112,20 +108,17 @@ public class JugFillerPlugin extends Plugin {
 
 	@Override
 	protected void startUp() {
-		chinBreakHandler.registerPlugin(this);
 	}
 	//what happens when you startup the plugin
 
 	@Override
 	protected void shutDown() {
 		resetVals();
-		chinBreakHandler.unregisterPlugin(this);
 	}
 	//What happens when you shutdown the plugin
 
 	private void resetVals() {
 		log.info("Stopping putting water in jugs");
-		chinBreakHandler.stopPlugin(this);
 		startJugFiller = false;
 		botTimer = null;
 		overlayManager.remove(overlay);
@@ -141,7 +134,6 @@ public class JugFillerPlugin extends Plugin {
 		if (configButtonClicked.getKey().equals("startButton")) {
 			if (!startJugFiller) {
 				startJugFiller = true;
-				chinBreakHandler.startPlugin(this);
 				botTimer = Instant.now();
 				initCounters();
 				state = null;
@@ -218,10 +210,6 @@ public class JugFillerPlugin extends Plugin {
 			return ANIMATING;
 		}
 
-		if (chinBreakHandler.shouldBreak(this)) {
-			return HANDLE_BREAK;
-		}
-
 		if (bank.isOpen()&& inventory.containsItem(ItemID.JUG)){
 			return CLOSE_BANK;
 		}
@@ -253,7 +241,7 @@ public class JugFillerPlugin extends Plugin {
 	}
 	@Subscribe
 	private void onGameTick(GameTick event) {
-		if (!startJugFiller || chinBreakHandler.isBreakActive(this)) {
+		if (!startJugFiller) {
 			return;
 		}
 		player = client.getLocalPlayer();
@@ -302,12 +290,6 @@ public class JugFillerPlugin extends Plugin {
 					startJugFiller = false;
 					resetVals();
 					break;
-				case  HANDLE_BREAK:
-					chinBreakHandler.startBreak(this);
-					timeout = 10;
-					break;
-
-
 			}
 		}
 	}

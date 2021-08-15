@@ -31,7 +31,6 @@ rootProject.name = "Dab Plugins"
 include(":MazeTeleGrab")
 include(":JugFiller")
 include(":iutils")
-include(":chinbreakhandler")
 
 for (project in rootProject.children) {
     project.apply {
