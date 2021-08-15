@@ -25,7 +25,7 @@
 
 version = "4.3.0"
 
-project.extra["PluginName"] = "iUtils"
+project.extra["PluginName"] = "DabUtils"
 project.extra["PluginDescription"] = "Illumine - Utils required for plugins to function with added automation"
 
 tasks {

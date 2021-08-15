@@ -25,7 +25,7 @@
 
 version = "2.0.1"
 
-project.extra["PluginName"] = "El break handler"
+project.extra["PluginName"] = "Dab break handler"
 project.extra["PluginDescription"] = "Automatically takes breaks for you (?)"
 
 dependencies {

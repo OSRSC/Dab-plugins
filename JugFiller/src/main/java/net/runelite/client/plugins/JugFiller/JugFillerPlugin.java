@@ -11,9 +11,11 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependencies;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.elbreakhandler.ElBreakHandler;
+import net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin;
 import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
@@ -29,6 +31,7 @@ import static net.runelite.client.plugins.JugFiller.JugFillerState.*;
 @Slf4j
 @Extension
 @PluginDependency(iUtils.class)
+@PluginDependency(ElBreakHandlerPlugin.class)
 @PluginDescriptor(
 		name = "Jug Filler",
 		description = "Fills empty jugs with water at Hosidius Kitchen",

@@ -53,7 +53,8 @@ tasks {
                 "Plugin-Provider" to project.extra["PluginProvider"],
                 "Plugin-Dependencies" to
                         arrayOf(
-                            nameToId("iUtils")
+                            nameToId("iUtils"),
+                            "elbreakhandler-plugin"
                         ).joinToString(),
                 "Plugin-Description" to project.extra["PluginDescription"],
                 "Plugin-License" to project.extra["PluginLicense"]
