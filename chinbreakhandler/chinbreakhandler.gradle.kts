@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "2.0.2"
+version = "2.0.0"
 
 project.extra["PluginName"] = "Dab break handler"
 project.extra["PluginDescription"] = "Automatically takes breaks for you (?)"
@@ -35,6 +35,11 @@ dependencies {
 
 tasks {
     jar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        from(configurations.runtimeClasspath.get()
+                .map { if (it.isDirectory) it else zipTree(it) })
+
         manifest {
             attributes(mapOf(
                     "Plugin-Version" to project.version,

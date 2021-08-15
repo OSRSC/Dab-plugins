@@ -36,8 +36,8 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$openosrsVersion+")
     compileOnly("com.openosrs:runelite-client:$openosrsVersion+")
-    compileOnly(project(":chinbreakhandler"))
-    compileOnly(project(":iutils"))
+    implementation(project(":chinbreakhandler"))
+    implementation(project(":iutils"))
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
@@ -53,8 +53,7 @@ tasks {
                 "Plugin-Provider" to project.extra["PluginProvider"],
                 "Plugin-Dependencies" to
                         arrayOf(
-                            nameToId("iUtils"),
-                            "elbreakhandler-plugin"
+                            nameToId("iUtils")
                         ).joinToString(),
                 "Plugin-Description" to project.extra["PluginDescription"],
                 "Plugin-License" to project.extra["PluginLicense"]

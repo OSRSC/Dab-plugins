@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.elbreakhandler;
+package com.owain.chinbreakhandler;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter(AccessLevel.PACKAGE)
 @AllArgsConstructor
-public enum ElBreakHandlerState
+public enum ChinBreakHandlerState
 {
 	NULL,
 

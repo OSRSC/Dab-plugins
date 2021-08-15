@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.elbreakhandler.ui.utils;
+package com.owain.chinbreakhandler.ui.utils;
 
 import java.util.PrimitiveIterator;
 import java.util.Random;

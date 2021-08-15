@@ -1,10 +1,10 @@
-package net.runelite.client.plugins.elbreakhandler.ui.utils;
+package com.owain.chinbreakhandler.ui.utils;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.primitives.Ints;
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin;
-import static net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel.PANEL_BACKGROUND_COLOR;
+import com.owain.chinbreakhandler.ChinBreakHandlerPlugin;
+import static com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel.PANEL_BACKGROUND_COLOR;
 import io.reactivex.rxjava3.disposables.Disposable;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -74,9 +74,9 @@ public class ConfigPanel extends FixedWidthPanel
 	private ConfigDescriptor pluginConfig = null;
 
 	@Inject
-	ConfigPanel(ElBreakHandlerPlugin elBreakHandlerPlugin)
+	ConfigPanel(ChinBreakHandlerPlugin chinBreakHandlerPlugin)
 	{
-		this.configManager = elBreakHandlerPlugin.getConfigManager();
+		this.configManager = chinBreakHandlerPlugin.getConfigManager();
 
 		setBackground(PANEL_BACKGROUND_COLOR);
 		setBorder(new EmptyBorder(5, 10, 0, 10));
@@ -109,10 +109,10 @@ public class ConfigPanel extends FixedWidthPanel
 
 		final Map<String, JPanel> titleWidgets = new HashMap<>();
 		final Map<ConfigObject, JPanel> topLevelPanels = new TreeMap<>((a, b) ->
-				ComparisonChain.start()
-						.compare(a.position(), b.position())
-						.compare(a.name(), b.name())
-						.result());
+			ComparisonChain.start()
+				.compare(a.position(), b.position())
+				.compare(a.name(), b.name())
+				.result());
 
 		for (ConfigTitleDescriptor ctd : pluginConfig.getTitles())
 		{
@@ -307,10 +307,10 @@ public class ConfigPanel extends FixedWidthPanel
 			boolean show = false;
 
 			List<String> itemHide = Splitter
-					.onPattern("\\|\\|")
-					.trimResults()
-					.omitEmptyStrings()
-					.splitToList(String.format("%s || %s", cid.getItem().unhide(), cid.getItem().hide()));
+				.onPattern("\\|\\|")
+				.trimResults()
+				.omitEmptyStrings()
+				.splitToList(String.format("%s || %s", cid.getItem().unhide(), cid.getItem().hide()));
 
 			for (ConfigItemDescriptor cid2 : cd.getItems())
 			{
@@ -329,20 +329,20 @@ public class ConfigPanel extends FixedWidthPanel
 							if (!cid.getItem().unhideValue().equals(""))
 							{
 								List<String> unhideValue = Splitter
-										.onPattern("\\|\\|")
-										.trimResults()
-										.omitEmptyStrings()
-										.splitToList(cid.getItem().unhideValue());
+									.onPattern("\\|\\|")
+									.trimResults()
+									.omitEmptyStrings()
+									.splitToList(cid.getItem().unhideValue());
 
 								show = unhideValue.contains(selectedItem.toString());
 							}
 							else if (!cid.getItem().hideValue().equals(""))
 							{
 								List<String> hideValue = Splitter
-										.onPattern("\\|\\|")
-										.trimResults()
-										.omitEmptyStrings()
-										.splitToList(cid.getItem().hideValue());
+									.onPattern("\\|\\|")
+									.trimResults()
+									.omitEmptyStrings()
+									.splitToList(cid.getItem().hideValue());
 
 								show = !hideValue.contains(selectedItem.toString());
 							}
@@ -390,67 +390,67 @@ public class ConfigPanel extends FixedWidthPanel
 		}
 
 		final List<ConfigSectionDescriptor> sections = getAllDeclaredInterfaceFields(inter).stream()
-				.filter(m -> m.isAnnotationPresent(ConfigSection.class) && m.getType() == String.class)
-				.map(m ->
+			.filter(m -> m.isAnnotationPresent(ConfigSection.class) && m.getType() == String.class)
+			.map(m ->
+			{
+				try
 				{
-					try
-					{
-						return new ConfigSectionDescriptor(
-								String.valueOf(m.get(inter)),
-								m.getDeclaredAnnotation(ConfigSection.class)
-						);
-					}
-					catch (IllegalAccessException e)
-					{
-						log.warn("Unable to load section {}::{}", inter.getSimpleName(), m.getName());
-						return null;
-					}
-				})
-				.filter(Objects::nonNull)
-				.sorted((a, b) -> ComparisonChain.start()
-						.compare(a.getSection().position(), b.getSection().position())
-						.compare(a.getSection().name(), b.getSection().name())
-						.result())
-				.collect(Collectors.toList());
+					return new ConfigSectionDescriptor(
+						String.valueOf(m.get(inter)),
+						m.getDeclaredAnnotation(ConfigSection.class)
+					);
+				}
+				catch (IllegalAccessException e)
+				{
+					log.warn("Unable to load section {}::{}", inter.getSimpleName(), m.getName());
+					return null;
+				}
+			})
+			.filter(Objects::nonNull)
+			.sorted((a, b) -> ComparisonChain.start()
+				.compare(a.getSection().position(), b.getSection().position())
+				.compare(a.getSection().name(), b.getSection().name())
+				.result())
+			.collect(Collectors.toList());
 
 		final List<ConfigTitleDescriptor> titles = getAllDeclaredInterfaceFields(inter).stream()
-				.filter(m -> m.isAnnotationPresent(ConfigTitle.class) && m.getType() == String.class)
-				.map(m ->
+			.filter(m -> m.isAnnotationPresent(ConfigTitle.class) && m.getType() == String.class)
+			.map(m ->
+			{
+				try
 				{
-					try
-					{
-						return new ConfigTitleDescriptor(
-								String.valueOf(m.get(inter)),
-								m.getDeclaredAnnotation(ConfigTitle.class)
-						);
-					}
-					catch (IllegalAccessException e)
-					{
-						log.warn("Unable to load title {}::{}", inter.getSimpleName(), m.getName());
-						return null;
-					}
-				})
-				.filter(Objects::nonNull)
-				.sorted((a, b) -> ComparisonChain.start()
-						.compare(a.getTitle().position(), b.getTitle().position())
-						.compare(a.getTitle().name(), b.getTitle().name())
-						.result())
-				.collect(Collectors.toList());
+					return new ConfigTitleDescriptor(
+						String.valueOf(m.get(inter)),
+						m.getDeclaredAnnotation(ConfigTitle.class)
+					);
+				}
+				catch (IllegalAccessException e)
+				{
+					log.warn("Unable to load title {}::{}", inter.getSimpleName(), m.getName());
+					return null;
+				}
+			})
+			.filter(Objects::nonNull)
+			.sorted((a, b) -> ComparisonChain.start()
+				.compare(a.getTitle().position(), b.getTitle().position())
+				.compare(a.getTitle().name(), b.getTitle().name())
+				.result())
+			.collect(Collectors.toList());
 
 		final List<ConfigItemDescriptor> items = Arrays.stream(inter.getMethods())
-				.filter(m -> m.getParameterCount() == 0 && m.isAnnotationPresent(ConfigItem.class))
-				.map(m -> new ConfigItemDescriptor(
-						m.getDeclaredAnnotation(ConfigItem.class),
-						m.getReturnType(),
-						m.getDeclaredAnnotation(Range.class),
-						m.getDeclaredAnnotation(Alpha.class),
-						m.getDeclaredAnnotation(Units.class)
-				))
-				.sorted((a, b) -> ComparisonChain.start()
-						.compare(a.getItem().position(), b.getItem().position())
-						.compare(a.getItem().name(), b.getItem().name())
-						.result())
-				.collect(Collectors.toList());
+			.filter(m -> m.getParameterCount() == 0 && m.isAnnotationPresent(ConfigItem.class))
+			.map(m -> new ConfigItemDescriptor(
+				m.getDeclaredAnnotation(ConfigItem.class),
+				m.getReturnType(),
+				m.getDeclaredAnnotation(Range.class),
+				m.getDeclaredAnnotation(Alpha.class),
+				m.getDeclaredAnnotation(Units.class)
+			))
+			.sorted((a, b) -> ComparisonChain.start()
+				.compare(a.getItem().position(), b.getItem().position())
+				.compare(a.getItem().name(), b.getItem().name())
+				.result())
+			.collect(Collectors.toList());
 
 		return new ConfigDescriptor(group, sections, titles, items);
 	}

@@ -1,6 +1,7 @@
 package net.runelite.client.plugins.JugFiller;
 
 import com.google.inject.Provides;
+import com.owain.chinbreakhandler.ChinBreakHandler;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ConfigButtonClicked;
@@ -13,7 +14,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandler;
 import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
@@ -82,7 +82,7 @@ public class JugFillerPlugin extends Plugin {
 	private CalculationUtils calc;
 
 	@Inject
-	private ElBreakHandler elBreakHandler;
+	private ChinBreakHandler chinBreakHandler;
 
 	MenuEntry targetMenu;
 	Widget bankItem;
@@ -112,20 +112,20 @@ public class JugFillerPlugin extends Plugin {
 
 	@Override
 	protected void startUp() {
-		elBreakHandler.registerPlugin(this);
+		chinBreakHandler.registerPlugin(this);
 	}
 	//what happens when you startup the plugin
 
 	@Override
 	protected void shutDown() {
 		resetVals();
-		elBreakHandler.unregisterPlugin(this);
+		chinBreakHandler.unregisterPlugin(this);
 	}
 	//What happens when you shutdown the plugin
 
 	private void resetVals() {
 		log.info("Stopping putting water in jugs");
-		elBreakHandler.stopPlugin(this);
+		chinBreakHandler.stopPlugin(this);
 		startJugFiller = false;
 		botTimer = null;
 		overlayManager.remove(overlay);
@@ -141,7 +141,7 @@ public class JugFillerPlugin extends Plugin {
 		if (configButtonClicked.getKey().equals("startButton")) {
 			if (!startJugFiller) {
 				startJugFiller = true;
-				elBreakHandler.startPlugin(this);
+				chinBreakHandler.startPlugin(this);
 				botTimer = Instant.now();
 				initCounters();
 				state = null;
@@ -218,7 +218,7 @@ public class JugFillerPlugin extends Plugin {
 			return ANIMATING;
 		}
 
-		if (elBreakHandler.shouldBreak(this)) {
+		if (chinBreakHandler.shouldBreak(this)) {
 			return HANDLE_BREAK;
 		}
 
@@ -253,7 +253,7 @@ public class JugFillerPlugin extends Plugin {
 	}
 	@Subscribe
 	private void onGameTick(GameTick event) {
-		if (!startJugFiller || elBreakHandler.isBreakActive(this)) {
+		if (!startJugFiller || chinBreakHandler.isBreakActive(this)) {
 			return;
 		}
 		player = client.getLocalPlayer();
@@ -303,7 +303,7 @@ public class JugFillerPlugin extends Plugin {
 					resetVals();
 					break;
 				case  HANDLE_BREAK:
-					elBreakHandler.startBreak(this);
+					chinBreakHandler.startBreak(this);
 					timeout = 10;
 					break;
 

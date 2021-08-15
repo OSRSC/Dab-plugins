@@ -2,14 +2,14 @@
  * Created by JFormDesigner on Sat Aug 01 23:27:36 CEST 2020
  */
 
-package net.runelite.client.plugins.elbreakhandler.ui;
+package com.owain.chinbreakhandler.ui;
 
 import com.google.inject.Inject;
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandler;
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin;
-import static net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel.PANEL_BACKGROUND_COLOR;
-import net.runelite.client.plugins.elbreakhandler.ui.utils.DeferredDocumentChangedListener;
-import net.runelite.client.plugins.elbreakhandler.ui.utils.ProfilesData;
+import com.owain.chinbreakhandler.ChinBreakHandler;
+import com.owain.chinbreakhandler.ChinBreakHandlerPlugin;
+import static com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel.PANEL_BACKGROUND_COLOR;
+import com.owain.chinbreakhandler.ui.utils.DeferredDocumentChangedListener;
+import com.owain.chinbreakhandler.ui.utils.ProfilesData;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -35,7 +35,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.ui.PluginPanel;
 import static net.runelite.client.ui.PluginPanel.PANEL_WIDTH;
 
-public class ElBreakHandlerAccountPanel extends JPanel
+public class ChinBreakHandlerAccountPanel extends JPanel
 {
 	@Override
 	public Dimension getPreferredSize()
@@ -44,14 +44,14 @@ public class ElBreakHandlerAccountPanel extends JPanel
 	}
 
 	private final ConfigManager configManager;
-	private final ElBreakHandler elBreakHandler;
+	private final ChinBreakHandler chinBreakHandler;
 	private final JPanel contentPanel = new JPanel(new GridLayout(0, 1));
 
 	@Inject
-	ElBreakHandlerAccountPanel(ElBreakHandlerPlugin elBreakHandlerPlugin, ElBreakHandler elBreakHandler)
+	ChinBreakHandlerAccountPanel(ChinBreakHandlerPlugin chinBreakHandlerPlugin, ChinBreakHandler chinBreakHandler)
 	{
-		this.configManager = elBreakHandlerPlugin.getConfigManager();
-		this.elBreakHandler = elBreakHandler;
+		this.configManager = chinBreakHandlerPlugin.getConfigManager();
+		this.chinBreakHandler = chinBreakHandler;
 
 		setupDefaults();
 
@@ -63,7 +63,7 @@ public class ElBreakHandlerAccountPanel extends JPanel
 
 	private boolean getConfigValue()
 	{
-		String accountselection = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection");
+		String accountselection = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection");
 
 		return Boolean.parseBoolean(accountselection);
 	}
@@ -84,17 +84,17 @@ public class ElBreakHandlerAccountPanel extends JPanel
 
 		if (profilesSalt == null || profilesSalt.length() == 0 || !profilesSavePasswords)
 		{
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection", true);
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection", true);
 			profilesButton.setEnabled(false);
 		}
 
 		manualButton.addActionListener(e -> {
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection", manualButton.isSelected());
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection", manualButton.isSelected());
 			contentPanel(manualButton.isSelected());
 		});
 
 		profilesButton.addActionListener(e -> {
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection", !profilesButton.isSelected());
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection", !profilesButton.isSelected());
 			contentPanel(!profilesButton.isSelected());
 		});
 
@@ -126,10 +126,10 @@ public class ElBreakHandlerAccountPanel extends JPanel
 
 			final JTextField usernameField = new JTextField();
 			usernameField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			usernameField.setText(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username"));
+			usernameField.setText(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username"));
 			DeferredDocumentChangedListener usernameListener = new DeferredDocumentChangedListener();
 			usernameListener.addChangeListener(e ->
-				configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username", usernameField.getText()));
+				configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username", usernameField.getText()));
 			usernameField.getDocument().addDocumentListener(usernameListener);
 
 			contentPanel.add(usernameField);
@@ -138,15 +138,15 @@ public class ElBreakHandlerAccountPanel extends JPanel
 
 			final JPasswordField passwordField = new JPasswordField();
 			passwordField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			passwordField.setText(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password"));
+			passwordField.setText(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password"));
 			DeferredDocumentChangedListener passwordListener = new DeferredDocumentChangedListener();
 			passwordListener.addChangeListener(e ->
-				configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password", String.valueOf(passwordField.getPassword())));
+				configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password", String.valueOf(passwordField.getPassword())));
 			passwordField.getDocument().addDocumentListener(passwordListener);
 
 			contentPanel.add(passwordField);
 		}
-		else if (ElBreakHandlerPlugin.data == null)
+		else if (ChinBreakHandlerPlugin.data == null)
 		{
 			contentPanel.add(new JLabel("Profiles plugin password"));
 			final JPasswordField passwordField = new JPasswordField();
@@ -161,7 +161,7 @@ public class ElBreakHandlerAccountPanel extends JPanel
 			{
 				try
 				{
-					ElBreakHandlerPlugin.data = ProfilesData.getProfileData(configManager, passwordField.getPassword());
+					ChinBreakHandlerPlugin.data = ProfilesData.getProfileData(configManager, passwordField.getPassword());
 					contentPanel(false);
 				}
 				catch (InvalidKeySpecException | NoSuchPaddingException | BadPaddingException | InvalidKeyException | IllegalBlockSizeException | NoSuchAlgorithmException ignored)
@@ -179,9 +179,9 @@ public class ElBreakHandlerAccountPanel extends JPanel
 			ConfigChanged configChanged = new ConfigChanged();
 			configChanged.setGroup("mock");
 			configChanged.setKey("mock");
-			elBreakHandler.configChanged.onNext(configChanged);
+			chinBreakHandler.configChanged.onNext(configChanged);
 
-			if (!ElBreakHandlerPlugin.data.contains(":"))
+			if (!ChinBreakHandlerPlugin.data.contains(":"))
 			{
 				contentPanel.add(new JLabel("No accounts found"));
 			}
@@ -189,7 +189,7 @@ public class ElBreakHandlerAccountPanel extends JPanel
 			{
 				contentPanel.add(new JLabel("Select account"));
 
-				String[] accounts = Arrays.stream(ElBreakHandlerPlugin.data.split("\\n"))
+				String[] accounts = Arrays.stream(ChinBreakHandlerPlugin.data.split("\\n"))
 					.map((s) -> s.split(":")[0])
 					.sorted()
 					.toArray(String[]::new);
@@ -199,11 +199,11 @@ public class ElBreakHandlerAccountPanel extends JPanel
 				filterComboBox.addActionListener(e -> {
 					if (filterComboBox.getSelectedItem() != null)
 					{
-						configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account", filterComboBox.getSelectedItem().toString());
+						configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account", filterComboBox.getSelectedItem().toString());
 					}
 				});
 
-				String config = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account");
+				String config = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account");
 
 				if (config != null)
 				{
@@ -229,24 +229,24 @@ public class ElBreakHandlerAccountPanel extends JPanel
 
 	private void setupDefaults()
 	{
-		if (configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection") == null)
+		if (configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection") == null)
 		{
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection", true);
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection", true);
 		}
 
-		if (configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username") == null)
+		if (configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username") == null)
 		{
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username", "");
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username", "");
 		}
 
-		if (configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password") == null)
+		if (configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password") == null)
 		{
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password", "");
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password", "");
 		}
 
-		if (configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account") == null)
+		if (configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account") == null)
 		{
-			configManager.setConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account", "");
+			configManager.setConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account", "");
 		}
 	}
 }

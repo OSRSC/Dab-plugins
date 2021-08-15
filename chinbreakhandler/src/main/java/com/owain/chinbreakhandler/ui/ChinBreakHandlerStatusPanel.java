@@ -1,13 +1,13 @@
-package net.runelite.client.plugins.elbreakhandler.ui;
+package com.owain.chinbreakhandler.ui;
 
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandler;
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin;
-import static net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin.CONFIG_GROUP;
-import static net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin.sanitizedName;
-import static net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel.BACKGROUND_COLOR;
-import static net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel.NORMAL_FONT;
-import static net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel.PANEL_BACKGROUND_COLOR;
-import static net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel.SMALL_FONT;
+import com.owain.chinbreakhandler.ChinBreakHandler;
+import com.owain.chinbreakhandler.ChinBreakHandlerPlugin;
+import static com.owain.chinbreakhandler.ChinBreakHandlerPlugin.CONFIG_GROUP;
+import static com.owain.chinbreakhandler.ChinBreakHandlerPlugin.sanitizedName;
+import static com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel.BACKGROUND_COLOR;
+import static com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel.NORMAL_FONT;
+import static com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel.PANEL_BACKGROUND_COLOR;
+import static com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel.SMALL_FONT;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import java.awt.BorderLayout;
@@ -34,11 +34,11 @@ import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.SwingUtil;
 
 @Slf4j
-public class ElBreakHandlerStatusPanel extends JPanel
+public class ChinBreakHandlerStatusPanel extends JPanel
 {
 	private final ConfigManager configManager;
-	private final ElBreakHandlerPlugin elBreakHandlerPlugin;
-	private final ElBreakHandler elBreakHandler;
+	private final ChinBreakHandlerPlugin chinBreakHandlerPlugin;
+	private final ChinBreakHandler chinBreakHandler;
 	private final Plugin plugin;
 
 	private final JPanel contentPanel = new JPanel(new GridBagLayout());
@@ -56,23 +56,23 @@ public class ElBreakHandlerStatusPanel extends JPanel
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	ElBreakHandlerStatusPanel(ElBreakHandlerPlugin elBreakHandlerPlugin, ElBreakHandler elBreakHandler, Plugin plugin)
+	ChinBreakHandlerStatusPanel(ChinBreakHandlerPlugin chinBreakHandlerPlugin, ChinBreakHandler chinBreakHandler, Plugin plugin)
 	{
-		this.configManager = elBreakHandlerPlugin.getConfigManager();
-		this.elBreakHandlerPlugin = elBreakHandlerPlugin;
-		this.elBreakHandler = elBreakHandler;
+		this.configManager = chinBreakHandlerPlugin.getConfigManager();
+		this.chinBreakHandlerPlugin = chinBreakHandlerPlugin;
+		this.chinBreakHandler = chinBreakHandler;
 		this.plugin = plugin;
 
 		setLayout(new BorderLayout());
 		setBackground(BACKGROUND_COLOR);
 
-		elBreakHandler
+		chinBreakHandler
 			.configChanged
 			.subscribe(this::onConfigChanged);
 
-		if (elBreakHandlerPlugin.disposables.containsKey(plugin))
+		if (chinBreakHandlerPlugin.disposables.containsKey(plugin))
 		{
-			Disposable seconds = elBreakHandlerPlugin.disposables.get(plugin);
+			Disposable seconds = chinBreakHandlerPlugin.disposables.get(plugin);
 
 			if (!seconds.isDisposed())
 			{
@@ -84,13 +84,13 @@ public class ElBreakHandlerStatusPanel extends JPanel
 			.interval(500, TimeUnit.MILLISECONDS)
 			.subscribe(this::milliseconds);
 
-		elBreakHandlerPlugin.disposables.put(plugin, secondsDisposable);
+		chinBreakHandlerPlugin.disposables.put(plugin, secondsDisposable);
 
-		Disposable extraDataDisposable = elBreakHandler
+		Disposable extraDataDisposable = chinBreakHandler
 			.getExtraDataObservable()
 			.subscribe((data) -> SwingUtil.syncExec(() -> this.extraData(data)));
 
-		elBreakHandlerPlugin.disposables.put(plugin, extraDataDisposable);
+		chinBreakHandlerPlugin.disposables.put(plugin, extraDataDisposable);
 
 		init();
 	}
@@ -111,30 +111,30 @@ public class ElBreakHandlerStatusPanel extends JPanel
 	{
 		Instant now = Instant.now();
 
-		Map<Plugin, Instant> startTimes = elBreakHandler.getStartTimes();
+		Map<Plugin, Instant> startTimes = chinBreakHandler.getStartTimes();
 
 		if (startTimes.containsKey(plugin))
 		{
-			Duration duration = Duration.between(elBreakHandler.getStartTimes().get(plugin), now);
+			Duration duration = Duration.between(chinBreakHandler.getStartTimes().get(plugin), now);
 			runtimeLabel.setText(formatDuration(duration));
 		}
 
-		Map<Plugin, Integer> breaks = elBreakHandler.getAmountOfBreaks();
+		Map<Plugin, Integer> breaks = chinBreakHandler.getAmountOfBreaks();
 
 		if (breaks.containsKey(plugin))
 		{
-			breaksLabel.setText(String.valueOf(elBreakHandler.getAmountOfBreaks().get(plugin)));
+			breaksLabel.setText(String.valueOf(chinBreakHandler.getAmountOfBreaks().get(plugin)));
 		}
 
-		if (!elBreakHandler.isBreakPlanned(plugin) && !elBreakHandler.isBreakActive(plugin))
+		if (!chinBreakHandler.isBreakPlanned(plugin) && !chinBreakHandler.isBreakActive(plugin))
 		{
 			timeLabel.setText("00:00:00");
 			return;
 		}
 
-		if (elBreakHandler.isBreakPlanned(plugin))
+		if (chinBreakHandler.isBreakPlanned(plugin))
 		{
-			Instant breaktime = elBreakHandler.getPlannedBreak(plugin);
+			Instant breaktime = chinBreakHandler.getPlannedBreak(plugin);
 
 			if (now.isAfter(breaktime))
 			{
@@ -146,9 +146,9 @@ public class ElBreakHandlerStatusPanel extends JPanel
 				timeLabel.setText(formatDuration(duration));
 			}
 		}
-		else if (elBreakHandler.isBreakActive(plugin))
+		else if (chinBreakHandler.isBreakActive(plugin))
 		{
-			Instant breaktime = elBreakHandler.getActiveBreak(plugin);
+			Instant breaktime = chinBreakHandler.getActiveBreak(plugin);
 
 			if (now.isAfter(breaktime))
 			{
@@ -165,11 +165,11 @@ public class ElBreakHandlerStatusPanel extends JPanel
 			timeLabel.setText("-");
 		}
 
-		boolean enabled = Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-enabled"));
+		boolean enabled = Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-enabled"));
 
-		if (enabled && elBreakHandler.getPlugins().get(plugin) && elBreakHandlerPlugin.isValidBreak(plugin) && !elBreakHandler.isBreakPlanned(plugin) && !elBreakHandler.isBreakActive(plugin))
+		if (enabled && chinBreakHandler.getPlugins().get(plugin) && chinBreakHandlerPlugin.isValidBreak(plugin) && !chinBreakHandler.isBreakPlanned(plugin) && !chinBreakHandler.isBreakActive(plugin))
 		{
-			elBreakHandlerPlugin.scheduleBreak(plugin);
+			chinBreakHandlerPlugin.scheduleBreak(plugin);
 		}
 	}
 
@@ -184,10 +184,11 @@ public class ElBreakHandlerStatusPanel extends JPanel
 
 		extraDataPanel.setBackground(BACKGROUND_COLOR);
 		extraDataPanel.setBorder(new CompoundBorder(
-				new CompoundBorder(
-						BorderFactory.createMatteBorder(0, 0, 1, 0, PANEL_BACKGROUND_COLOR),
-						BorderFactory.createLineBorder(BACKGROUND_COLOR)
-				), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+			new CompoundBorder(
+				BorderFactory.createMatteBorder(0, 0, 1, 0, PANEL_BACKGROUND_COLOR),
+				BorderFactory.createLineBorder(BACKGROUND_COLOR)
+			), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
 		extraDataPanel.removeAll();
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -265,7 +266,7 @@ public class ElBreakHandlerStatusPanel extends JPanel
 
 		if (configChanged.getKey().contains("enabled") && configChanged.getNewValue().equals("false"))
 		{
-			elBreakHandler.removePlannedBreak(plugin);
+			chinBreakHandler.removePlannedBreak(plugin);
 		}
 
 		statusPanel();
@@ -330,7 +331,7 @@ public class ElBreakHandlerStatusPanel extends JPanel
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		if (!elBreakHandler.getPlugins().get(plugin) && !elBreakHandler.isBreakActive(plugin))
+		if (!chinBreakHandler.getPlugins().get(plugin) && !chinBreakHandler.isBreakActive(plugin))
 		{
 			c.insets = new Insets(2, 0, 2, 0);
 			c.weightx = 0;
@@ -341,9 +342,9 @@ public class ElBreakHandlerStatusPanel extends JPanel
 			return;
 		}
 
-		if (elBreakHandler.getPlugins().get(plugin))
+		if (chinBreakHandler.getPlugins().get(plugin))
 		{
-			boolean enabled = Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-enabled"));
+			boolean enabled = Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-enabled"));
 
 			if (!enabled)
 			{
@@ -356,19 +357,19 @@ public class ElBreakHandlerStatusPanel extends JPanel
 				return;
 			}
 
-			if (elBreakHandler.getPlugins().get(plugin) && elBreakHandlerPlugin.isValidBreak(plugin) && !elBreakHandler.isBreakPlanned(plugin) && !elBreakHandler.isBreakActive(plugin))
+			if (chinBreakHandler.getPlugins().get(plugin) && chinBreakHandlerPlugin.isValidBreak(plugin) && !chinBreakHandler.isBreakPlanned(plugin) && !chinBreakHandler.isBreakActive(plugin))
 			{
-				elBreakHandlerPlugin.scheduleBreak(plugin);
+				chinBreakHandlerPlugin.scheduleBreak(plugin);
 			}
 		}
 
 		JLabel breaking = new JLabel();
 
-		if (elBreakHandler.isBreakPlanned(plugin))
+		if (chinBreakHandler.isBreakPlanned(plugin))
 		{
 			breaking.setText("Scheduled break in:");
 		}
-		else if (elBreakHandler.isBreakActive(plugin))
+		else if (chinBreakHandler.isBreakActive(plugin))
 		{
 			breaking.setText("Taking a break for:");
 		}

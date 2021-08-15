@@ -1,9 +1,9 @@
-package net.runelite.client.plugins.elbreakhandler.ui;
+package com.owain.chinbreakhandler.ui;
 
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandler;
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin;
-import net.runelite.client.plugins.elbreakhandler.ui.utils.ConfigPanel;
-import net.runelite.client.plugins.elbreakhandler.ui.utils.JMultilineLabel;
+import com.owain.chinbreakhandler.ChinBreakHandler;
+import com.owain.chinbreakhandler.ChinBreakHandlerPlugin;
+import com.owain.chinbreakhandler.ui.utils.ConfigPanel;
+import com.owain.chinbreakhandler.ui.utils.JMultilineLabel;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
 import java.awt.BorderLayout;
@@ -41,7 +41,7 @@ import net.runelite.client.ui.components.PluginErrorPanel;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.SwingUtil;
 
-public class ElBreakHandlerPanel extends PluginPanel
+public class ChinBreakHandlerPanel extends PluginPanel
 {
 	public final static Color PANEL_BACKGROUND_COLOR = ColorScheme.DARK_GRAY_COLOR;
 	final static Color BACKGROUND_COLOR = ColorScheme.DARKER_GRAY_COLOR;
@@ -56,14 +56,14 @@ public class ElBreakHandlerPanel extends PluginPanel
 	{
 		final BufferedImage helpIcon =
 			ImageUtil.recolorImage(
-				ImageUtil.loadImageResource(ElBreakHandlerPlugin.class, "help.png"), ColorScheme.BRAND_BLUE
+				ImageUtil.loadImageResource(ChinBreakHandlerPlugin.class, "help.png"), ColorScheme.BRAND_BLUE
 			);
 		HELP_ICON = new ImageIcon(helpIcon);
 		HELP_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(helpIcon, 0.53f));
 	}
 
-	private final ElBreakHandlerPlugin elBreakHandlerPlugin;
-	private final ElBreakHandler elBreakHandler;
+	private final ChinBreakHandlerPlugin chinBreakHandlerPlugin;
+	private final ChinBreakHandler chinBreakHandler;
 	private final ConfigPanel configPanel;
 
 	public @NonNull Disposable pluginDisposable;
@@ -76,39 +76,39 @@ public class ElBreakHandlerPanel extends PluginPanel
 	private final JPanel breakTimingsPanel = new JPanel(new GridLayout(0, 1));
 
 	@Inject
-	private ElBreakHandlerPanel(ElBreakHandlerPlugin elBreakHandlerPlugin, ElBreakHandler elBreakHandler, ConfigPanel configPanel)
+	private ChinBreakHandlerPanel(ChinBreakHandlerPlugin chinBreakHandlerPlugin, ChinBreakHandler chinBreakHandler, ConfigPanel configPanel)
 	{
 		super(false);
 
-		configPanel.init(elBreakHandlerPlugin.getOptionsConfig());
+		configPanel.init(chinBreakHandlerPlugin.getOptionsConfig());
 
-		this.elBreakHandlerPlugin = elBreakHandlerPlugin;
-		this.elBreakHandler = elBreakHandler;
+		this.chinBreakHandlerPlugin = chinBreakHandlerPlugin;
+		this.chinBreakHandler = chinBreakHandler;
 		this.configPanel = configPanel;
 
-		pluginDisposable = elBreakHandler
+		pluginDisposable = chinBreakHandler
 			.getPluginObservable()
 			.subscribe((Map<Plugin, Boolean> plugins) ->
 				SwingUtil.syncExec(() ->
 					buildPanel(plugins)));
 
-		activeDisposable = elBreakHandler
+		activeDisposable = chinBreakHandler
 			.getActiveObservable()
 			.subscribe(
 				(ignored) ->
 					SwingUtil.syncExec(() ->
-						buildPanel(elBreakHandler.getPlugins()))
+						buildPanel(chinBreakHandler.getPlugins()))
 			);
 
-		currentDisposable = elBreakHandler
+		currentDisposable = chinBreakHandler
 			.getActiveBreaksObservable()
 			.subscribe(
 				(ignored) ->
 					SwingUtil.syncExec(() ->
-						buildPanel(elBreakHandler.getPlugins()))
+						buildPanel(chinBreakHandler.getPlugins()))
 			);
 
-		startDisposable = elBreakHandler
+		startDisposable = chinBreakHandler
 			.getActiveObservable()
 			.subscribe(
 				(ignored) ->
@@ -123,7 +123,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 					})
 			);
 
-		configDisposable = elBreakHandler
+		configDisposable = chinBreakHandler
 			.configChanged
 			.subscribe(
 				(ignored) ->
@@ -137,7 +137,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 		this.setBackground(PANEL_BACKGROUND_COLOR);
 		this.setLayout(new BorderLayout());
 
-		buildPanel(elBreakHandler.getPlugins());
+		buildPanel(chinBreakHandler.getPlugins());
 	}
 
 	void buildPanel(Map<Plugin, Boolean> plugins)
@@ -147,7 +147,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 		if (plugins.isEmpty())
 		{
 			PluginErrorPanel errorPanel = new PluginErrorPanel();
-			errorPanel.setContent("El Break Handler", "There were no plugins that registered themselves with the break handler.");
+			errorPanel.setContent("Chin break handler", "There were no plugins that registered themselves with the break handler.");
 
 			add(errorPanel, BorderLayout.NORTH);
 		}
@@ -174,7 +174,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 		JLabel title = new JLabel();
 		JLabel help = new JLabel(HELP_ICON);
 
-		title.setText("El Break Handler");
+		title.setText("Chin break handler");
 		title.setForeground(Color.WHITE);
 
 		help.setToolTipText("Info");
@@ -184,12 +184,12 @@ public class ElBreakHandlerPanel extends PluginPanel
 			public void mousePressed(MouseEvent mouseEvent)
 			{
 				JOptionPane.showMessageDialog(
-						ClientUI.getFrame(),
-						"<html><center>The configs in this panel can be used to <b>schedule</b> breaks.<br>" +
-								"When the timer hits zero a break is scheduled. This does not mean that the break will be taken immediately!<br>" +
-								"Plugins decide what the best time is for a break, for example a NMZ dream will be finished instead of interrupted.</center></html>",
-						"El Break Handler",
-						JOptionPane.QUESTION_MESSAGE
+					ClientUI.getFrame(),
+					"<html><center>The configs in this panel can be used to <b>schedule</b> breaks.<br>" +
+						"When the timer hits zero a break is scheduled. This does not mean that the break will be taken immediately!<br>" +
+						"Plugins decide what the best time is for a break, for example a NMZ dream will be finished instead of interrupted.</center></html>",
+					"Chin break handler",
+					JOptionPane.QUESTION_MESSAGE
 				);
 			}
 
@@ -217,11 +217,11 @@ public class ElBreakHandlerPanel extends PluginPanel
 	{
 		unlockAccountPanel.removeAll();
 
-		Set<Plugin> activePlugins = elBreakHandler.getActivePlugins();
+		Set<Plugin> activePlugins = chinBreakHandler.getActivePlugins();
 
-		boolean manual = Boolean.parseBoolean(elBreakHandlerPlugin.getConfigManager().getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection"));
+		boolean manual = Boolean.parseBoolean(chinBreakHandlerPlugin.getConfigManager().getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection"));
 
-		String data = ElBreakHandlerPlugin.data;
+		String data = ChinBreakHandlerPlugin.data;
 
 		if (activePlugins.isEmpty() || manual || (data != null && !data.trim().isEmpty()))
 		{
@@ -231,8 +231,8 @@ public class ElBreakHandlerPanel extends PluginPanel
 		JPanel titleWrapper = new JPanel(new BorderLayout());
 		titleWrapper.setBackground(new Color(125, 40, 40));
 		titleWrapper.setBorder(new CompoundBorder(
-				BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(115, 30, 30)),
-				BorderFactory.createLineBorder(new Color(125, 40, 40))
+			BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(115, 30, 30)),
+			BorderFactory.createLineBorder(new Color(125, 40, 40))
 		));
 
 		JLabel title = new JLabel();
@@ -269,7 +269,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 	{
 		breakTimingsPanel.removeAll();
 
-		Set<Plugin> pluginStream = elBreakHandler.getActivePlugins().stream().filter(e -> !elBreakHandlerPlugin.isValidBreak(e)).collect(Collectors.toSet());
+		Set<Plugin> pluginStream = chinBreakHandler.getActivePlugins().stream().filter(e -> !chinBreakHandlerPlugin.isValidBreak(e)).collect(Collectors.toSet());
 
 		if (pluginStream.isEmpty())
 		{
@@ -283,8 +283,8 @@ public class ElBreakHandlerPanel extends PluginPanel
 			JPanel titleWrapper = new JPanel(new BorderLayout());
 			titleWrapper.setBackground(new Color(125, 40, 40));
 			titleWrapper.setBorder(new CompoundBorder(
-					BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(115, 30, 30)),
-					BorderFactory.createLineBorder(new Color(125, 40, 40))
+				BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(115, 30, 30)),
+				BorderFactory.createLineBorder(new Color(125, 40, 40))
 			));
 
 			JLabel title = new JLabel();
@@ -322,7 +322,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 
 	private JPanel statusPanel()
 	{
-		Set<Plugin> activePlugins = elBreakHandler.getActivePlugins();
+		Set<Plugin> activePlugins = chinBreakHandler.getActivePlugins();
 
 		JPanel contentPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -354,7 +354,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 
 		for (Plugin plugin : activePlugins)
 		{
-			ElBreakHandlerStatusPanel statusPanel = new ElBreakHandlerStatusPanel(elBreakHandlerPlugin, elBreakHandler, plugin);
+			ChinBreakHandlerStatusPanel statusPanel = new ChinBreakHandlerStatusPanel(chinBreakHandlerPlugin, chinBreakHandler, plugin);
 
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.weightx = 1.0;
@@ -369,9 +369,9 @@ public class ElBreakHandlerPanel extends PluginPanel
 		if (activePlugins.size() > 0)
 		{
 			scheduleBreakButton.addActionListener(e -> activePlugins.forEach(plugin -> {
-				if (!elBreakHandler.isBreakActive(plugin))
+				if (!chinBreakHandler.isBreakActive(plugin))
 				{
-					elBreakHandler.planBreak(plugin, Instant.now());
+					chinBreakHandler.planBreak(plugin, Instant.now());
 				}
 			}));
 
@@ -391,7 +391,7 @@ public class ElBreakHandlerPanel extends PluginPanel
 		JTabbedPane mainTabPane = new JTabbedPane();
 
 		JScrollPane pluginPanel = wrapContainer(contentPane(plugins));
-		JScrollPane repositoryPanel = wrapContainer(new ElBreakHandlerAccountPanel(elBreakHandlerPlugin, elBreakHandler));
+		JScrollPane repositoryPanel = wrapContainer(new ChinBreakHandlerAccountPanel(chinBreakHandlerPlugin, chinBreakHandler));
 		JScrollPane optionsPanel = wrapContainer(configPanel);
 
 		mainTabPane.add("Plugins", pluginPanel);
@@ -406,14 +406,14 @@ public class ElBreakHandlerPanel extends PluginPanel
 		JPanel contentPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		if (elBreakHandler.getPlugins().isEmpty())
+		if (chinBreakHandler.getPlugins().isEmpty())
 		{
 			return contentPanel;
 		}
 
 		for (Map.Entry<Plugin, Boolean> plugin : plugins.entrySet())
 		{
-			ElBreakHandlerPluginPanel panel = new ElBreakHandlerPluginPanel(elBreakHandlerPlugin, plugin.getKey(), plugin.getValue());
+			ChinBreakHandlerPluginPanel panel = new ChinBreakHandlerPluginPanel(chinBreakHandlerPlugin, plugin.getKey(), plugin.getValue());
 
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.weightx = 1.0;

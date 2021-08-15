@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.elbreakhandler.ui.utils;
+package com.owain.chinbreakhandler.ui.utils;
 
 import java.awt.Dimension;
 import javax.swing.JPanel;

@@ -1,7 +1,7 @@
-package net.runelite.client.plugins.elbreakhandler;
+package com.owain.chinbreakhandler;
 
-import static net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin.sanitizedName;
-import net.runelite.client.plugins.elbreakhandler.ui.utils.IntRandomNumberGenerator;
+import static com.owain.chinbreakhandler.ChinBreakHandlerPlugin.sanitizedName;
+import com.owain.chinbreakhandler.ui.utils.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.client.config.ConfigManager;
@@ -23,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @SuppressWarnings("unused")
 @Singleton
-public class ElBreakHandler
+public class ChinBreakHandler
 {
 	private final ConfigManager configManager;
 
@@ -51,7 +50,7 @@ public class ElBreakHandler
 	private final PublishSubject<Map<Plugin, Map<String, String>>> extraDataSubject = PublishSubject.create();
 
 	@Inject
-	ElBreakHandler(ConfigManager configManager)
+	ChinBreakHandler(ConfigManager configManager)
 	{
 		this.configManager = configManager;
 	}
@@ -163,8 +162,8 @@ public class ElBreakHandler
 
 	public void startBreak(Plugin plugin)
 	{
-		int from = Integer.parseInt(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakfrom")) * 60;
-		int to = Integer.parseInt(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakto")) * 60;
+		int from = Integer.parseInt(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakfrom")) * 60;
+		int to = Integer.parseInt(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakto")) * 60;
 
 		int random = new IntRandomNumberGenerator(from, to).nextInt();
 

@@ -1,6 +1,6 @@
-package net.runelite.client.plugins.elbreakhandler.ui.utils;
+package com.owain.chinbreakhandler.ui.utils;
 
-import net.runelite.client.plugins.elbreakhandler.ElBreakHandlerPlugin;
+import com.owain.chinbreakhandler.ChinBreakHandlerPlugin;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
@@ -16,7 +16,7 @@ public class OnOffToggleButton extends JToggleButton
 
 	static
 	{
-		BufferedImage onSwitcher = ImageUtil.loadImageResource(ElBreakHandlerPlugin.class, "switcher_on.png");
+		BufferedImage onSwitcher = ImageUtil.loadImageResource(ChinBreakHandlerPlugin.class, "switcher_on.png");
 		ON_SWITCHER = new ImageIcon(ImageUtil.recolorImage(onSwitcher, ColorScheme.BRAND_BLUE));
 		OFF_SWITCHER = new ImageIcon(ImageUtil.flipImage(
 			ImageUtil.luminanceScale(

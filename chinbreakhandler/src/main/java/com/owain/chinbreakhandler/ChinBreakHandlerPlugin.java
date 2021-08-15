@@ -1,11 +1,34 @@
-package net.runelite.client.plugins.elbreakhandler;
+package com.owain.chinbreakhandler;
 
 import com.google.inject.Provides;
+import com.owain.chinbreakhandler.ui.ChinBreakHandlerPanel;
+import com.owain.chinbreakhandler.ui.utils.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.*;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.MenuAction;
+import net.runelite.api.Point;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
@@ -23,8 +46,6 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.WorldService;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.elbreakhandler.ui.ElBreakHandlerPanel;
-import net.runelite.client.plugins.elbreakhandler.ui.utils.IntRandomNumberGenerator;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
@@ -35,26 +56,15 @@ import net.runelite.http.api.worlds.WorldType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.pf4j.Extension;
 
-import javax.inject.Inject;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 @Extension
 @PluginDescriptor(
-	name = "El break handler",
+	name = "Chin break handler",
 	description = "Automatically takes breaks for you (?)"
 )
 @Slf4j
-public class ElBreakHandlerPlugin extends Plugin
+public class ChinBreakHandlerPlugin extends Plugin
 {
-	public final static String CONFIG_GROUP = "elbreakhandler";
+	public final static String CONFIG_GROUP = "chinbreakhandler";
 	private static final int DISPLAY_SWITCHER_MAX_ATTEMPTS = 3;
 
 	@Inject
@@ -71,7 +81,7 @@ public class ElBreakHandlerPlugin extends Plugin
 	private ConfigManager configManager;
 
 	@Inject
-	private ElBreakHandler elBreakHandler;
+	private ChinBreakHandler chinBreakHandler;
 
 	@Inject
 	private OptionsConfig optionsConfig;
@@ -97,7 +107,7 @@ public class ElBreakHandlerPlugin extends Plugin
 	public static String data;
 
 	private NavigationButton navButton;
-	private ElBreakHandlerPanel panel;
+	private ChinBreakHandlerPanel panel;
 	private boolean logout;
 	private int delay = -1;
 
@@ -107,7 +117,7 @@ public class ElBreakHandlerPlugin extends Plugin
 	public Disposable activeDisposable;
 	public Disposable logoutDisposable;
 
-	private ElBreakHandlerState state = ElBreakHandlerState.NULL;
+	private ChinBreakHandlerState state = ChinBreakHandlerState.NULL;
 	private ExecutorService executorService;
 
 	private net.runelite.api.World quickHopTargetWorld;
@@ -117,19 +127,19 @@ public class ElBreakHandlerPlugin extends Plugin
 	{
 		executorService = Executors.newSingleThreadExecutor();
 
-		panel = injector.getInstance(ElBreakHandlerPanel.class);
+		panel = injector.getInstance(ChinBreakHandlerPanel.class);
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "el_special.png");
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "chin_special.png");
 
 		navButton = NavigationButton.builder()
-			.tooltip("El break handler")
+			.tooltip("Chin break handler")
 			.icon(icon)
 			.priority(4)
 			.panel(panel)
 			.build();
 		clientToolbar.addNavigation(navButton);
 
-		activeBreaks = elBreakHandler
+		activeBreaks = chinBreakHandler
 			.getCurrentActiveBreaksObservable()
 			.subscribe(this::breakActivated);
 
@@ -137,7 +147,7 @@ public class ElBreakHandlerPlugin extends Plugin
 			.interval(1, TimeUnit.SECONDS)
 			.subscribe(this::seconds);
 
-		activeDisposable = elBreakHandler
+		activeDisposable = chinBreakHandler
 			.getActiveObservable()
 			.subscribe(
 				(plugins) ->
@@ -152,7 +162,7 @@ public class ElBreakHandlerPlugin extends Plugin
 				}
 			);
 
-		logoutDisposable = elBreakHandler
+		logoutDisposable = chinBreakHandler
 			.getlogoutActionObservable()
 			.subscribe(
 				(plugin) ->
@@ -160,7 +170,7 @@ public class ElBreakHandlerPlugin extends Plugin
 					if (plugin != null)
 					{
 						logout = true;
-						state = ElBreakHandlerState.LOGOUT;
+						state = ChinBreakHandlerState.LOGOUT;
 					}
 				}
 			);
@@ -210,33 +220,33 @@ public class ElBreakHandlerPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged configChanged)
 	{
-		elBreakHandler.configChanged.onNext(configChanged);
+		chinBreakHandler.configChanged.onNext(configChanged);
 	}
 
 	public void scheduleBreak(Plugin plugin)
 	{
-		int from = Integer.parseInt(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdfrom")) * 60;
-		int to = Integer.parseInt(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdto")) * 60;
+		int from = Integer.parseInt(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdfrom")) * 60;
+		int to = Integer.parseInt(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdto")) * 60;
 
 		int random = new IntRandomNumberGenerator(from, to).nextInt();
 
-		elBreakHandler.planBreak(plugin, Instant.now().plus(random, ChronoUnit.SECONDS));
+		chinBreakHandler.planBreak(plugin, Instant.now().plus(random, ChronoUnit.SECONDS));
 	}
 
 	private void breakActivated(Pair<Plugin, Instant> pluginInstantPair)
 	{
 		Plugin plugin = pluginInstantPair.getKey();
 
-		if (!elBreakHandler.getPlugins().get(plugin) || Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-logout")))
+		if (!chinBreakHandler.getPlugins().get(plugin) || Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-logout")))
 		{
 			logout = true;
-			state = ElBreakHandlerState.LOGOUT;
+			state = ChinBreakHandlerState.LOGOUT;
 		}
 	}
 
 	private void seconds(long ignored)
 	{
-		Map<Plugin, Instant> activeBreaks = elBreakHandler.getActiveBreaks();
+		Map<Plugin, Instant> activeBreaks = chinBreakHandler.getActiveBreaks();
 
 		if (activeBreaks.isEmpty() || client.getGameState() != GameState.LOGIN_SCREEN)
 		{
@@ -255,19 +265,19 @@ public class ElBreakHandlerPlugin extends Plugin
 
 		if (finished)
 		{
-			boolean manual = Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection"));
+			boolean manual = Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection"));
 
 			String username = null;
 			String password = null;
 
 			if (manual)
 			{
-				username = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username");
-				password = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password");
+				username = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-username");
+				password = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-manual-password");
 			}
 			else
 			{
-				String account = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account");
+				String account = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "accountselection-profiles-account");
 
 				if (data == null)
 				{
@@ -321,9 +331,9 @@ public class ElBreakHandlerPlugin extends Plugin
 	{
 		if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN)
 		{
-			state = ElBreakHandlerState.LOGIN_SCREEN;
+			state = ChinBreakHandlerState.LOGIN_SCREEN;
 
-			if (!elBreakHandler.getActivePlugins().isEmpty())
+			if (!chinBreakHandler.getActivePlugins().isEmpty())
 			{
 				if (optionsConfig.hopAfterBreak() && (optionsConfig.american() || optionsConfig.unitedKingdom() || optionsConfig.german() || optionsConfig.australian()))
 				{
@@ -331,11 +341,11 @@ public class ElBreakHandlerPlugin extends Plugin
 				}
 			}
 
-			if (optionsConfig.stopAfterBreaks() != 0 && elBreakHandler.getTotalAmountOfBreaks() >= optionsConfig.stopAfterBreaks())
+			if (optionsConfig.stopAfterBreaks() != 0 && chinBreakHandler.getTotalAmountOfBreaks() >= optionsConfig.stopAfterBreaks())
 			{
-				for (Plugin plugin : Set.copyOf(elBreakHandler.getActivePlugins()))
+				for (Plugin plugin : Set.copyOf(chinBreakHandler.getActivePlugins()))
 				{
-					elBreakHandler.stopPlugin(plugin);
+					chinBreakHandler.stopPlugin(plugin);
 				}
 			}
 		}
@@ -344,11 +354,11 @@ public class ElBreakHandlerPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick gameTick)
 	{
-		if (state == ElBreakHandlerState.NULL && logout && delay == 0)
+		if (state == ChinBreakHandlerState.NULL && logout && delay == 0)
 		{
-			state = ElBreakHandlerState.LOGOUT;
+			state = ChinBreakHandlerState.LOGOUT;
 		}
-		else if (state == ElBreakHandlerState.LOGIN_SCREEN && !elBreakHandler.getActiveBreaks().isEmpty())
+		else if (state == ChinBreakHandlerState.LOGIN_SCREEN && !chinBreakHandler.getActiveBreaks().isEmpty())
 		{
 			logout = false;
 
@@ -361,16 +371,16 @@ public class ElBreakHandlerPlugin extends Plugin
 			}
 			else if (loginScreen == null)
 			{
-				state = ElBreakHandlerState.INVENTORY;
+				state = ChinBreakHandlerState.INVENTORY;
 			}
 		}
-		else if (state == ElBreakHandlerState.LOGOUT)
+		else if (state == ChinBreakHandlerState.LOGOUT)
 		{
 			sendKey(KeyEvent.VK_ESCAPE);
 
-			state = ElBreakHandlerState.LOGOUT_TAB;
+			state = ChinBreakHandlerState.LOGOUT_TAB;
 		}
-		else if (state == ElBreakHandlerState.LOGOUT_TAB)
+		else if (state == ChinBreakHandlerState.LOGOUT_TAB)
 		{
 			// Logout tab
 			client.runScript(915, 10);
@@ -380,38 +390,38 @@ public class ElBreakHandlerPlugin extends Plugin
 
 			if (logoutButton != null || logoutDoorButton != null)
 			{
-				state = ElBreakHandlerState.LOGOUT_BUTTON;
+				state = ChinBreakHandlerState.LOGOUT_BUTTON;
 			}
 		}
-		else if (state == ElBreakHandlerState.LOGOUT_BUTTON)
+		else if (state == ChinBreakHandlerState.LOGOUT_BUTTON)
 		{
 			click();
 			delay = new IntRandomNumberGenerator(20, 25).nextInt();
 		}
-		else if (state == ElBreakHandlerState.INVENTORY)
+		else if (state == ChinBreakHandlerState.INVENTORY)
 		{
 			// Inventory
 			client.runScript(915, 3);
-			state = ElBreakHandlerState.RESUME;
+			state = ChinBreakHandlerState.RESUME;
 		}
-		else if (state == ElBreakHandlerState.RESUME)
+		else if (state == ChinBreakHandlerState.RESUME)
 		{
-			for (Plugin plugin : elBreakHandler.getActiveBreaks().keySet())
+			for (Plugin plugin : chinBreakHandler.getActiveBreaks().keySet())
 			{
-				elBreakHandler.stopBreak(plugin);
+				chinBreakHandler.stopBreak(plugin);
 			}
 
-			state = ElBreakHandlerState.NULL;
+			state = ChinBreakHandlerState.NULL;
 		}
-		else if (!elBreakHandler.getActiveBreaks().isEmpty())
+		else if (!chinBreakHandler.getActiveBreaks().isEmpty())
 		{
-			Map<Plugin, Instant> activeBreaks = elBreakHandler.getActiveBreaks();
+			Map<Plugin, Instant> activeBreaks = chinBreakHandler.getActiveBreaks();
 
 			if (activeBreaks
 				.keySet()
 				.stream()
 				.anyMatch(e ->
-					!Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(e) + "-logout"))))
+					!Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(e) + "-logout"))))
 			{
 				if (client.getKeyboardIdleTicks() > 14900)
 				{
@@ -434,7 +444,7 @@ public class ElBreakHandlerPlugin extends Plugin
 
 				if (finished)
 				{
-					state = ElBreakHandlerState.INVENTORY;
+					state = ChinBreakHandlerState.INVENTORY;
 				}
 			}
 		}
@@ -456,19 +466,19 @@ public class ElBreakHandlerPlugin extends Plugin
 			if (++displaySwitcherAttempts >= DISPLAY_SWITCHER_MAX_ATTEMPTS)
 			{
 				String chatMessage = new ChatMessageBuilder()
-						.append(ChatColorType.NORMAL)
-						.append("Failed to quick-hop after ")
-						.append(ChatColorType.HIGHLIGHT)
-						.append(Integer.toString(displaySwitcherAttempts))
-						.append(ChatColorType.NORMAL)
-						.append(" attempts.")
-						.build();
+					.append(ChatColorType.NORMAL)
+					.append("Failed to quick-hop after ")
+					.append(ChatColorType.HIGHLIGHT)
+					.append(Integer.toString(displaySwitcherAttempts))
+					.append(ChatColorType.NORMAL)
+					.append(" attempts.")
+					.build();
 
 				chatMessageManager
-						.queue(QueuedMessage.builder()
-								.type(ChatMessageType.CONSOLE)
-								.runeLiteFormattedMessage(chatMessage)
-								.build());
+					.queue(QueuedMessage.builder()
+						.type(ChatMessageType.CONSOLE)
+						.runeLiteFormattedMessage(chatMessage)
+						.build());
 
 				resetQuickHopper();
 			}
@@ -486,11 +496,10 @@ public class ElBreakHandlerPlugin extends Plugin
 		quickHopTargetWorld = null;
 	}
 
-
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked menuOptionClicked)
 	{
-		if (state == ElBreakHandlerState.LOGIN_SCREEN)
+		if (state == ChinBreakHandlerState.LOGIN_SCREEN)
 		{
 			Widget playButton = client.getWidget(WidgetID.LOGIN_CLICK_TO_PLAY_GROUP_ID, 78);
 
@@ -509,9 +518,9 @@ public class ElBreakHandlerPlugin extends Plugin
 				playButton.getId()
 			);
 
-			state = ElBreakHandlerState.INVENTORY;
+			state = ChinBreakHandlerState.INVENTORY;
 		}
-		else if (state == ElBreakHandlerState.LOGOUT_BUTTON)
+		else if (state == ChinBreakHandlerState.LOGOUT_BUTTON)
 		{
 			Widget logoutButton = client.getWidget(182, 8);
 			Widget logoutDoorButton = client.getWidget(69, 23);
@@ -542,7 +551,7 @@ public class ElBreakHandlerPlugin extends Plugin
 				param1
 			);
 
-			state = ElBreakHandlerState.NULL;
+			state = ChinBreakHandlerState.NULL;
 		}
 	}
 
@@ -593,7 +602,7 @@ public class ElBreakHandlerPlugin extends Plugin
 
 	public boolean isValidBreak(Plugin plugin)
 	{
-		Map<Plugin, Boolean> plugins = elBreakHandler.getPlugins();
+		Map<Plugin, Boolean> plugins = chinBreakHandler.getPlugins();
 
 		if (!plugins.containsKey(plugin))
 		{
@@ -605,10 +614,10 @@ public class ElBreakHandlerPlugin extends Plugin
 			return true;
 		}
 
-		String thresholdfrom = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdfrom");
-		String thresholdto = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdto");
-		String breakfrom = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakfrom");
-		String breakto = configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakto");
+		String thresholdfrom = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdfrom");
+		String thresholdto = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-thresholdto");
+		String breakfrom = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakfrom");
+		String breakto = configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, sanitizedName(plugin) + "-breakto");
 
 		return isNumeric(thresholdfrom) &&
 			isNumeric(thresholdto) &&
@@ -674,19 +683,19 @@ public class ElBreakHandlerPlugin extends Plugin
 		{
 			int worldLocation = world.getLocation();
 
-			if (Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "american")) && worldLocation == 0)
+			if (Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "american")) && worldLocation == 0)
 			{
 				return world;
 			}
-			else if (Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "united-kingdom")) && worldLocation == 1)
+			else if (Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "united-kingdom")) && worldLocation == 1)
 			{
 				return world;
 			}
-			else if (Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "australian")) && worldLocation == 3)
+			else if (Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "australian")) && worldLocation == 3)
 			{
 				return world;
 			}
-			else if (Boolean.parseBoolean(configManager.getConfiguration(ElBreakHandlerPlugin.CONFIG_GROUP, "german")) && worldLocation == 7)
+			else if (Boolean.parseBoolean(configManager.getConfiguration(ChinBreakHandlerPlugin.CONFIG_GROUP, "german")) && worldLocation == 7)
 			{
 				return world;
 			}
@@ -759,19 +768,19 @@ public class ElBreakHandlerPlugin extends Plugin
 		}
 
 		String chatMessage = new ChatMessageBuilder()
-				.append(ChatColorType.NORMAL)
-				.append("Hopping away from a player. New world: ")
-				.append(ChatColorType.HIGHLIGHT)
-				.append(Integer.toString(world.getId()))
-				.append(ChatColorType.NORMAL)
-				.append("..")
-				.build();
+			.append(ChatColorType.NORMAL)
+			.append("Hopping away from a player. New world: ")
+			.append(ChatColorType.HIGHLIGHT)
+			.append(Integer.toString(world.getId()))
+			.append(ChatColorType.NORMAL)
+			.append("..")
+			.build();
 
 		chatMessageManager
-				.queue(QueuedMessage.builder()
-						.type(ChatMessageType.CONSOLE)
-						.runeLiteFormattedMessage(chatMessage)
-						.build());
+			.queue(QueuedMessage.builder()
+				.type(ChatMessageType.CONSOLE)
+				.runeLiteFormattedMessage(chatMessage)
+				.build());
 
 		quickHopTargetWorld = rsWorld;
 		displaySwitcherAttempts = 0;
