@@ -6,7 +6,6 @@ import net.runelite.api.GameState;
 import net.runelite.api.Skill;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.iutils.api.Spells;
 import net.runelite.client.plugins.iutils.api.*;
 import net.runelite.client.plugins.iutils.game.*;
 import net.runelite.client.plugins.iutils.scene.Area;
@@ -56,15 +55,14 @@ public abstract class UtilsScript extends Plugin {
         game.tick(2);
 
         game.inventory().withId(ids).forEach(i -> {
-            log.info("In equip loop");
-            if (equipment.isEquipped(i.id()))
+            if (equipment.isEquipped(i.id())) {
                 return;
+            }
 
             log.info("Equipping: {}", i.name());
             i.interact(1);
-            game.tick(2);
+            game.sleepDelay();
         });
-        log.info("Finished equipping");
     }
 
     protected void equip(int id, int quantity) {
@@ -123,14 +121,17 @@ public abstract class UtilsScript extends Plugin {
         }
 
         if (keepInventoryItems) {
-            items.addAll(game.inventory().all().stream()
-                    .map(i -> new ItemQuantity(i.id(), i.quantity()))
-                    .collect(Collectors.toList())
-            );
+            items.addAll(inventoryList());
             log.info("Keeping items: {}", items.toString());
         }
 
         obtain(items.toArray(ItemQuantity[]::new));
+    }
+
+    protected List<ItemQuantity> inventoryList() {
+        return game.inventory().all().stream()
+                .map(i -> new ItemQuantity(i.id(), i.quantity()))
+                .collect(Collectors.toList());
     }
 
     protected void withdraw(ItemQuantity... items) {
@@ -139,6 +140,10 @@ public abstract class UtilsScript extends Plugin {
                 .filter(i -> i.quantity > 0)
                 .collect(Collectors.toList())
                 .forEach(i -> bank().withdraw(i.id, i.quantity, false));
+    }
+
+    protected void obtainBank(List<ItemQuantity> items) {
+        obtainBank(items.toArray(ItemQuantity[]::new));
     }
 
     protected void obtainBank(ItemQuantity... items) {
@@ -168,6 +173,7 @@ public abstract class UtilsScript extends Plugin {
                     }
                 });
         if (!buyItems.isEmpty()) {
+            log.info("Buying items: {}", buyItems.toString());
             bank().depositInventory();
             grandExchange().buy(buyItems);
         }

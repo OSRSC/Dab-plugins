@@ -78,7 +78,7 @@ public class Position implements Area {
             return ((Position) other).distanceTo(this);
         }
 
-        throw new IllegalStateException("distanceTo check for Area type not valid;");
+        return Integer.MAX_VALUE;
     }
 
     public boolean inside(Area area) {
