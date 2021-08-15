@@ -109,7 +109,6 @@ public class JugFillerPlugin extends Plugin {
 	JugFillerConfig provideConfig(final ConfigManager configManager) {
 		return configManager.getConfig(JugFillerConfig.class);
 	}
-	//needed to read config
 
 	@Override
 	protected void startUp() {
