@@ -25,10 +25,10 @@ import ProjectVersions.openosrsVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.1"
+version = "1.0.0"
 
-project.extra["PluginName"] = "HydraAutoPrayers" // This is the name that is used in the external plugin manager panel
-project.extra["PluginDescription"] = "Swaps prayers for you at Alchemichal Hydra" // This is the description that is used in the external plugin manager panel
+project.extra["PluginName"] = "Hydra Auto Prayers" // This is the name that is used in the external plugin manager panel
+project.extra["PluginDescription"] = "Swaps prayers for you at Alchemichal Hydra + an overlay all in one" // This is the description that is used in the external plugin manager panel
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -36,7 +36,6 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$openosrsVersion+")
     compileOnly("com.openosrs:runelite-client:$openosrsVersion+")
-    compileOnly(group = "com.openosrs.externals", name = "iutils", version = "4.0.8+");
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
@@ -50,10 +49,6 @@ tasks {
                 "Plugin-Version" to project.version,
                 "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
                 "Plugin-Provider" to project.extra["PluginProvider"],
-                "Plugin-Dependencies" to
-                        arrayOf(
-                            nameToId("iUtils")
-                        ).joinToString(),
                 "Plugin-Description" to project.extra["PluginDescription"],
                 "Plugin-License" to project.extra["PluginLicense"]
             ))

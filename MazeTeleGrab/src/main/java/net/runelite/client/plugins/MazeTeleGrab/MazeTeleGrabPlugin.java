@@ -1,9 +1,11 @@
 package net.runelite.client.plugins.MazeTeleGrab;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.widgets.Widget;
@@ -25,16 +27,27 @@ import static net.runelite.api.MenuAction.SPELL_CAST_ON_NPC;
 @Slf4j
 public class MazeTeleGrabPlugin extends Plugin
 {
+	private boolean inMTA = false;
+	private static final int[] MTA_REGIONS = {
+			13463
+		};
+
 	@Inject
 	private Client client;
 
 
 	protected void startUp()
 	{
-
+		inMTA = checkArea();
 	}
 
 	protected void shutDown()
+	{
+		inMTA = false;
+	}
+
+	@Subscribe
+	private void onGameStateChanged(GameStateChanged state)
 	{
 
 	}
@@ -42,7 +55,7 @@ public class MazeTeleGrabPlugin extends Plugin
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded event)
 	{
-		if (!Text.sanitize(event.getTarget()).contains("Maze Guardian") || (event.isForceLeftClick())) return;
+		if (inMTA && !Text.sanitize(event.getTarget()).contains("Maze Guardian") || (event.isForceLeftClick())) return;
 		if (event.getOpcode() == MenuAction.NPC_FIRST_OPTION.getId())
 		{
 			{
@@ -58,7 +71,7 @@ public class MazeTeleGrabPlugin extends Plugin
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
-		if (event.getMenuOption().contains("Cast"))
+		if (inMTA && event.getMenuOption().contains("Cast"))
 		{
 			event.setMenuAction(SPELL_CAST_ON_NPC);
 			event.setActionParam(0);
@@ -86,5 +99,9 @@ public class MazeTeleGrabPlugin extends Plugin
 				e.getParam1(),
 				true
 		);
+	}
+
+	private boolean checkArea() {
+		return Arrays.equals(client.getMapRegions(), MTA_REGIONS) && client.isInInstancedRegion();
 	}
 }

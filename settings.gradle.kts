@@ -25,12 +25,11 @@
 
 rootProject.name = "Dab Plugins"
 
-//include(":HydraAutoPrayers")
+include(":HydraAutoPrayers")
 //include(":CerbHelper")
 //include(":DKSwapper")
 include(":MazeTeleGrab")
 include(":JugFiller")
-include(":iutils")
 
 for (project in rootProject.children) {
     project.apply {

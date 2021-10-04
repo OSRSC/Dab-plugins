@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2019, Lucas <https://github.com/lucwousin>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,22 +22,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.HydraAutoPrayers;
 
-version = "4.4.2"
+import java.awt.image.BufferedImage;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.runelite.client.game.SpriteManager;
+import net.runelite.client.util.ImageUtil;
+import net.runelite.api.coords.WorldPoint;
 
-project.extra["PluginName"] = "iUtils"
-project.extra["PluginDescription"] = "Illumine - Utils required for plugins to function with added automation"
+@Getter(AccessLevel.PACKAGE)
+@RequiredArgsConstructor
+enum HydraPhase
+{
+	ONE(3, 8237, 8238, 1644, 0, 1774, new WorldPoint(1371, 10263, 0)),
+	TWO(3, 8244, 8245, 0, 8241, 1959, new WorldPoint(1371, 10272, 0)),
+	THREE(3, 8251, 8252, 0, 8248, 1800, new WorldPoint(1362, 10272, 0)),
+	FOUR(1, 8257, 8258, 1644, 0, 1774, null);
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	private final int attacksPerSwitch;
+	private final int deathAnim1;
+	private final int deathAnim2;
+	private final int specProjectileId;
+	private final int specAnimationId;
+
+	@Getter(AccessLevel.NONE)
+	private final int specImageID;
+	private final WorldPoint fountain;
+
+	private BufferedImage specImage;
+
+	BufferedImage getSpecImage(SpriteManager spriteManager)
+	{
+		if (specImage == null)
+		{
+			BufferedImage tmp = spriteManager.getSprite(specImageID, 0);
+			specImage = tmp == null ? null : ImageUtil.resizeImage(tmp, HydraOverlay.IMGSIZE, HydraOverlay.IMGSIZE);
+		}
+
+		return specImage;
+	}
 }
