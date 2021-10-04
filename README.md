@@ -1,3 +1,16 @@
-Open source plugins for the OpenOSRS client. 
-Only plugin availble right now is MazeTeleGrab. In its current status is will left click cast telegrab on any NPC so when you are not using it turn it off.
-CerbHelper, DKSwapper, and HydraAutoPrayers are currently posted here but won't load into OpenOSRS when you add this repo as they are unfinished. I have them posted here so others can see how I made it enablie on/off via hotkey with an added privacy feature for the widget.
+![](https://imgur.com/Ebo1OP6.gif)
+#Dab-plugins
+
+## Plugin List
+```
+Open-soure plugins for OpenOSRS
++ Hydra Auto Prayers - Automatic prayers + Overlay for Alchemical Hydra
++ Jug Filler - Automatically fill empty jugs in the Hosidius Kitchen. Must have iutils to work.
++ Maze Telegrab - Left click cast telegrab on the maze guardian at MTA
+```
+
+## Credits 
+####Illumine - https://github.com/illumineawake <br>
+####OpenOSRS - https://github.com/open-osrs <br>
+####MeteorLite - https://github.com/MeteorLite <br>
+####SpoonLite -https://github.com/spoonlite
