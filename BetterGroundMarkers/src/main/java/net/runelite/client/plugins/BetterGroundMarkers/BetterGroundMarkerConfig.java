@@ -72,21 +72,24 @@ public interface BetterGroundMarkerConfig extends Config
 			name = "Group Colors",
 			description = "Colors for ground marker groups 1-12.",
 			position = 0,
-			closedByDefault = true)
+			closedByDefault = true
+	)
 	public static final String groupSections = "groupSection";
 
 	@ConfigSection(
 			name = "General Settings",
 			description = "Colors for ground marker groups 1-12.",
-			position = 0,
-			closedByDefault = true)
+			position = 1,
+			closedByDefault = true
+	)
 	public static final String generalSection = "generalSection";
 
 	@ConfigItem(
 		position = 0,
 		keyName = "amount",
 		name = "Amount of groups",
-		description = "The amount of inventory groups"
+		description = "The amount of inventory groups",
+		section = "groupSection"
 	)
 	default amount getAmount()
 	{
