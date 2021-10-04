@@ -28,7 +28,7 @@ import ProjectVersions.openosrsVersion
 
 version = "1.1.3"
 
-project.extra["PluginName"] = "MazeTeleGrab" // This is the name that is used in the external plugin manager panel
+project.extra["PluginName"] = "Maze Tele Grab" // This is the name that is used in the external plugin manager panel
 project.extra["PluginDescription"] = "Left click telegrabs the maze guardian at MTA" // This is the description that is used in the external plugin manager panel
 
 dependencies {
