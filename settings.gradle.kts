@@ -27,6 +27,7 @@ rootProject.name = "Dab Plugins"
 
 include(":HydraAutoPrayers")
 include(":CerbAutoPrayers")
+include(":ZulrahAutoPrayers")
 //include(":DKSwapper")
 include(":MazeTeleGrab")
 include(":JugFiller")

@@ -12,11 +12,13 @@ Open-source plugins for OpenOSRS
 + Hydra Auto Prayers - Automatic prayers + Overlay for Alchemical Hydra.
 + Jug Filler - Automatically fill empty jugs in the Hosidius Kitchen. Must have iutils and to work.
 + Maze Telegrab - Left click cast telegrab on the maze guardian at MTA.
++ Zulrah Auto Prayers - Automatic prayers + Overlay for Zulrah
 ```
 
 ## Credits 
 Illumine - https://github.com/illumineawake <br>
 Owain - https://github.com/Owain94 <br>
+zJustin -https://github.com/SRLJustin <br>
 OpenOSRS - https://github.com/open-osrs <br>
 MeteorLite - https://github.com/MeteorLite <br>
 SpoonLite -https://github.com/spoonlite
