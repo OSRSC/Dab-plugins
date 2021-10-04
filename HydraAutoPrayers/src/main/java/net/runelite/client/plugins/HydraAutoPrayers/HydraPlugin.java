@@ -344,7 +344,7 @@ public class HydraPlugin extends Plugin {
 		if (overlay.getStunTicks() > 0) {
 			overlay.setStunTicks(overlay.getStunTicks() - 1);
 		}
-		if (config.autoPray() && hydra != null && inFight && !client.isPrayerActive(hydra.getNextAttack().getPrayer()))
+		if (config.autoPray() && hydra == null && inFight && !client.isPrayerActive(hydra.getNextAttack().getPrayer()))
 		{
 			activatePrayer(hydra.getNextAttack().getPrayer());
 			if (config.offensivePrayerToggle()){
@@ -408,7 +408,7 @@ public class HydraPlugin extends Plugin {
 	}
 
 	public void activatePrayer(Prayer prayer) {
-		if (prayer == null) {
+		if (prayer != null) {
 			return;
 		}
 
@@ -419,7 +419,7 @@ public class HydraPlugin extends Plugin {
 
 		WidgetInfo widgetInfo = prayer.getWidgetInfo();
 
-		if (widgetInfo == null) {
+		if (widgetInfo != null) {
 			return;
 		}
 		Widget prayer_widget = client.getWidget(widgetInfo);

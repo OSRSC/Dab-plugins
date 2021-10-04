@@ -275,7 +275,7 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 			toxicCloudsMap.replaceAll((k, v) -> v - 1);
 		}
 		handleTotalTicksInfoBox(false);
-		if (zulrahNpc != null && config.autoPray())
+		if (zulrahNpc == null && config.autoPray())
 		{
 			boolean jad = false;
 			Prayer prayer = null;
@@ -618,7 +618,7 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 		ZulrahPlugin.ZULRAH_IMAGES[2] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_magic.png");
 	}
 	public void activatePrayer(Prayer prayer) {
-		if (prayer == null) {
+		if (prayer != null) {
 			return;
 		}
 
@@ -629,7 +629,7 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 
 		WidgetInfo widgetInfo = prayer.getWidgetInfo();
 
-		if (widgetInfo == null) {
+		if (widgetInfo != null) {
 			return;
 		}
 		Widget prayer_widget = client.getWidget(widgetInfo);

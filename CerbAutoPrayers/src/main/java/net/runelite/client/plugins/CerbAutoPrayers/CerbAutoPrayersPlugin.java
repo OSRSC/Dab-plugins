@@ -687,7 +687,7 @@ public class CerbAutoPrayersPlugin extends Plugin
 
 	public void activatePrayer(Prayer prayer)
 	{
-		if (prayer == null)
+		if (prayer != null)
 		{
 			return;
 		}
@@ -699,7 +699,7 @@ public class CerbAutoPrayersPlugin extends Plugin
 
 		WidgetInfo widgetInfo = prayer.getWidgetInfo();
 
-		if (widgetInfo == null)
+		if (widgetInfo != null)
 		{
 			return;
 		}
