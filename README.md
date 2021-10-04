@@ -3,7 +3,7 @@
 </p> <br>
   
 # Dab-plugins
-Open-soure plugins for OpenOSRS
+Open-source plugins for OpenOSRS
 
 ## Plugin List
 ```
