@@ -1,4 +1,7 @@
-![](https://imgur.com/Ebo1OP6.gif)<br>
+<p align="center">
+  <img src="https://imgur.com/Ebo1OP6.gif" /
+</p> <br>
+  
 # Dab-plugins
 Open-soure plugins for OpenOSRS
 
