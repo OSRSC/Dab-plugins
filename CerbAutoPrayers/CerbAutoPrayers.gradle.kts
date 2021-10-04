@@ -25,7 +25,7 @@ import ProjectVersions.openosrsVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.0.0" //change this after updates
+version = "1.0.1" //change this after updates
 
 project.extra["PluginName"] = "Cerb Auto Prayers" // This is the name that is used in the external plugin manager panel
 project.extra["PluginDescription"] = "Automatically swap prayers at Cerberus" // This is the description that is used in the external plugin manager panel

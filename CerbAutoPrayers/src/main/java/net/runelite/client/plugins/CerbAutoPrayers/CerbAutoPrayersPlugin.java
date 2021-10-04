@@ -212,7 +212,7 @@ public class CerbAutoPrayersPlugin extends Plugin
 
 		++gameTick;
 
-		if (/*config.calculateAutoAttackPrayer()*/true && gameTick % 10 == 3)
+		if (gameTick % 10 == 3)
 		{
 			setAutoAttackPrayer();
 		}
@@ -452,7 +452,7 @@ public class CerbAutoPrayersPlugin extends Plugin
 			deactivatePrayer(Prayer.PROTECT_FROM_MAGIC);
 			deactivatePrayer(Prayer.PROTECT_FROM_MELEE);
 			deactivatePrayer(Prayer.PROTECT_FROM_MISSILES);
-
+			deactivatePrayer(config.offensivePrayer().getPrayer());
 
 		}
 
