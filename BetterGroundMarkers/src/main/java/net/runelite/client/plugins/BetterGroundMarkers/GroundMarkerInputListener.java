@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019 Owain van Brakel <https:github.com/Owain94>
+ * Copyright (c) 2018, TheLonelyDev <https://github.com/TheLonelyDev>
+ * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,22 +23,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.BetterGroundMarkers;
 
-rootProject.name = "Dab Plugins"
+import java.awt.event.KeyEvent;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import net.runelite.client.input.KeyListener;
 
-include(":HydraAutoPrayers")
-//include(":CerbHelper")
-//include(":DKSwapper")
-include(":MazeTeleGrab")
-include(":JugFiller")
-include(":BetterGroundMarkers")
+@Singleton
+public class GroundMarkerInputListener implements KeyListener
+{
+	private static final int HOTKEY = KeyEvent.VK_SHIFT;
 
-for (project in rootProject.children) {
-    project.apply {
-        projectDir = file(name)
-        buildFileName = "$name.gradle.kts"
+	private final BetterGroundMarkerPlugin plugin;
 
-        require(projectDir.isDirectory) { "Project '${project.path} must have a $projectDir directory" }
-        require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
-    }
+	@Inject
+	private GroundMarkerInputListener(final BetterGroundMarkerPlugin plugin)
+	{
+		this.plugin = plugin;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		if (e.getKeyCode() == HOTKEY)
+		{
+			plugin.setHotKeyPressed(true);
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		if (e.getKeyCode() == HOTKEY)
+		{
+			plugin.setHotKeyPressed(false);
+		}
+	}
 }

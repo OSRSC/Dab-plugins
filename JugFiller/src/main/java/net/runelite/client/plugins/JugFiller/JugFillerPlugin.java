@@ -29,7 +29,7 @@ import static net.runelite.client.plugins.JugFiller.JugFillerState.*;
 @Extension
 @PluginDependency(iUtils.class)
 @PluginDescriptor(
-		name = "Jug Filler",
+		name = "<html><font color=#19C2FF>Jug Filler",
 		description = "Fills empty jugs with water at Hosidius Kitchen",
 		tags = {"dab", "jug"}
 )

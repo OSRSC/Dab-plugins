@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019 Owain van Brakel <https:github.com/Owain94>
+ * Copyright (c) 2018, TheLonelyDev <https://github.com/TheLonelyDev>
+ * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,21 +24,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Dab Plugins"
+package net.runelite.client.plugins.BetterGroundMarkers;
 
-include(":HydraAutoPrayers")
-//include(":CerbHelper")
-//include(":DKSwapper")
-include(":MazeTeleGrab")
-include(":JugFiller")
-include(":BetterGroundMarkers")
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-for (project in rootProject.children) {
-    project.apply {
-        projectDir = file(name)
-        buildFileName = "$name.gradle.kts"
-
-        require(projectDir.isDirectory) { "Project '${project.path} must have a $projectDir directory" }
-        require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
-    }
+@Value
+@EqualsAndHashCode(exclude = {"group"})
+class GroundMarkerPoint
+{
+	public int regionId;
+	public int regionX;
+	public int regionY;
+	public int z;
+	public int group;
 }

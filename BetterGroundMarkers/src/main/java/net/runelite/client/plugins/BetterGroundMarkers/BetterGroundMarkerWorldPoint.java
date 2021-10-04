@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owain van Brakel <https:github.com/Owain94>
+ * Copyright (c) 2018, TheStonedTurtle <https://github.com/TheStonedTurtle>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,22 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.BetterGroundMarkers;
 
-rootProject.name = "Dab Plugins"
+import lombok.Value;
+import net.runelite.api.coords.WorldPoint;
 
-include(":HydraAutoPrayers")
-//include(":CerbHelper")
-//include(":DKSwapper")
-include(":MazeTeleGrab")
-include(":JugFiller")
-include(":BetterGroundMarkers")
-
-for (project in rootProject.children) {
-    project.apply {
-        projectDir = file(name)
-        buildFileName = "$name.gradle.kts"
-
-        require(projectDir.isDirectory) { "Project '${project.path} must have a $projectDir directory" }
-        require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
-    }
+@Value
+class BetterGroundMarkerWorldPoint
+{
+	public GroundMarkerPoint groundMarkerPoint;
+	public WorldPoint worldPoint;
 }

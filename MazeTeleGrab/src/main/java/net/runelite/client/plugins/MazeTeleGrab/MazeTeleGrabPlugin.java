@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.widgets.Widget;
@@ -21,7 +20,7 @@ import static net.runelite.api.MenuAction.SPELL_CAST_ON_NPC;
 @Extension
 @SuppressWarnings("unused")
 @PluginDescriptor(
-		name = "Maze Telegrab",
+		name = "<html><font color=#19C2FF>Maze Telegrab",
 		description = "Left click telegrabs the maze guardian at MTA"
 )
 @Slf4j
@@ -44,12 +43,6 @@ public class MazeTeleGrabPlugin extends Plugin
 	protected void shutDown()
 	{
 		inMTA = false;
-	}
-
-	@Subscribe
-	private void onGameStateChanged(GameStateChanged state)
-	{
-
 	}
 
 	@Subscribe

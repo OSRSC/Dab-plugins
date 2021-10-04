@@ -51,7 +51,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Hydra Auto Prayers",
+	name = "<html><font color=#19C2FF>Hydra Auto Prayers",
 	description = "Automatically swap prayers for hydra  + and overlay so its all in one",
 	tags = {"Hydra", "Lazy", "4 headed asshole"},
 	enabledByDefault = false

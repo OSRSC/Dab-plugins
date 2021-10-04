@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owain van Brakel <https:github.com/Owain94>
+ * Copyright (c) 2018, Snakk <http://github.com/SnakkSnokk>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,21 +23,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Dab Plugins"
+package net.runelite.client.plugins.BetterGroundMarkers;
 
-include(":HydraAutoPrayers")
-//include(":CerbHelper")
-//include(":DKSwapper")
-include(":MazeTeleGrab")
-include(":JugFiller")
-include(":BetterGroundMarkers")
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-for (project in rootProject.children) {
-    project.apply {
-        projectDir = file(name)
-        buildFileName = "$name.gradle.kts"
+@Getter
+@RequiredArgsConstructor
+public enum TileMode
+{
+    DEFAULT("Default"),
+    NO_OUTLINE("No Outline"),
+    NO_OUTLINE_COLOR("No Outline Color");
 
-        require(projectDir.isDirectory) { "Project '${project.path} must have a $projectDir directory" }
-        require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
+    private final String name;
+
+    @Override
+    public String toString()
+    {
+        return name;
     }
 }
