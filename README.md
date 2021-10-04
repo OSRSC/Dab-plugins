@@ -8,6 +8,7 @@ Open-soure plugins for OpenOSRS
 ## Plugin List
 ```
 + Better Ground Markers - Pre-v4 Ground Markers with added functionality.
++ Cerb Auto Prayers - Automatically swap prayers at Cerberus
 + Hydra Auto Prayers - Automatic prayers + Overlay for Alchemical Hydra.
 + Jug Filler - Automatically fill empty jugs in the Hosidius Kitchen. Must have iutils and to work.
 + Maze Telegrab - Left click cast telegrab on the maze guardian at MTA.
