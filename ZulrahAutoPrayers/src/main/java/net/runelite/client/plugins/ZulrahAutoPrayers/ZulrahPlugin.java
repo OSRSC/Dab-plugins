@@ -307,10 +307,8 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 			{
 				case NpcID.ZULRAH:
 				case NpcID.ZULRAH_2043:
-					activatePrayer(
-						config.offensiveMagePrayer().getPrayer());
-				case NpcID.ZULRAH_2044:
-						activatePrayer(config.offensiveRangePrayer().getPrayer());
+					activatePrayer(config.offensiveMagePrayer().getPrayer());
+				case NpcID.ZULRAH_2044: activatePrayer(config.offensiveRangePrayer().getPrayer());
 			}
 		}
 	}
